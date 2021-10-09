@@ -1,6 +1,6 @@
 import './App.css';
 import initalizeAuthentication from './Firebase/firebase.init';
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, updateProfile } from "firebase/auth";
 import { useState } from 'react';
 
 
@@ -8,6 +8,7 @@ initalizeAuthentication();
 const googleProvider = new GoogleAuthProvider();
 
 function App() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -54,9 +55,17 @@ function App() {
       console.log(user);
       setError('');
       verifyEmail();
+      setUserName();
     })
     .catch(error=>{
       setError(error.message);
+    })
+  }
+
+  const   setUserName = () =>{
+    updateProfile(auth.currentUser, {displayName:name})
+    .then(result =>{
+      
     })
   }
 
@@ -70,6 +79,10 @@ function App() {
   const toggleLogin = event =>{
     setIsLogin(event.target.checked)
   }
+
+  const handleNameChange = e =>{
+    setName(e.target.value)
+  } 
 
   const handlePasswordChange = event =>{
     setPassword(event.target.value);
@@ -89,6 +102,12 @@ function App() {
     <div className="mx-5">
       <form onSubmit={handleRegistration}>
         <h3 className="text-primary">Please {isLogin ? 'Login' : 'Register'}</h3>
+  {!isLogin &&<div className="row mb-3">
+    <label htmlFor="inputName" className="col-sm-2 col-form-label">Name</label>
+    <div className="col-sm-10">
+      <input type="text" onBlur={handleNameChange} className="form-control" id="inputName" placeholder="Your name"/>
+    </div>
+  </div>}
   <div className="row mb-3">
     <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">Email</label>
     <div className="col-sm-10">
